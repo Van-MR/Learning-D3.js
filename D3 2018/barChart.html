@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Making a Bar Chart</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/d3@5.6.0/dist/d3.min.js"></script>
+  </head>
+  <body>
+    <svg width="960" height="500"></svg>
+
+    <script>
+
+
+         const dataset = [
+           {
+             "country":"China",
+             "population":141
+           },
+           {
+             "country":"India",
+             "population":200
+           },
+           {
+             "country":"United States",
+             "population":96
+           },
+           {
+             "country":"Indonesia",
+             "population":290
+           },
+           {
+              "country":"Brazil",
+              "population":365
+            },
+            {
+               "country":"Pakistan",
+               "population":404
+             },
+             {
+                "country":"Nigeria",
+                "population":150
+             },
+             {
+                 "country":"Russia",
+                 "population":276
+             },
+             {
+                  "country":"Mexico",
+                  "population":346
+              }
+         ];
+
+
+         const svg = d3.select("svg")
+                       .attr("transform","translate(0,70)");
+         const width = +svg.attr("width");
+         const height = +svg.attr("height");
+         const margin = { top: 20, right: 40, bottom: 20, left: 100 };
+         const innerWidth = width - margin.left - margin.right;
+         const innerHeight = height - margin.top - margin.bottom;
+
+         const xScale = d3.scaleLinear()
+              .domain([0,d3.max(dataset,function(d){
+                return d.population;
+              })])
+              .range([0,width]);
+
+        const yScale = d3.scaleBand()
+              .domain(dataset.map(d => d.country))
+              .range([0,height])
+              .padding("0.1");
+
+        const xAxisTickFormat = number =>
+        d3.format('.3s')(number)
+          .replace('G', 'B');
+
+
+        const g = svg.append("g")
+              .attr("transform",`translate(${margin.left},${margin.top})`);
+
+       const yAixG  =  g.append("g").call(d3.axisLeft(yScale))
+               .selectAll(".domain ,.tick line")
+                 .remove();
+       const xAixG  =  g.append('g').call(d3.axisBottom(xScale))
+                  .attr('transform', `translate(0,${innerHeight})`)
+                  .selectAll(".domain")
+                  .remove();
+       xAixG.append("text")
+          .attr("y",innerHeight)
+          .attr("x",0)
+          .attr("fill","teal")
+          .text("population");
+
+
+              g.selectAll("rect")
+                  .data(dataset)
+                  .enter()
+                  .append("rect")
+                     .attr("y",function(d){ return yScale(d.country)})
+                     .attr("width",function(d) { return xScale(d.population)})
+                     .attr("height", yScale.bandwidth())
+                     .attr("fill","steelblue");
+
+              g.append("text")
+                 .attr("y",-5)
+                 .attr("fill","red")
+                 .text("Top 10 populatuons Countries");
+
+    </script>
+  </body>
+</html>

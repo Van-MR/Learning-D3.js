@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style type="text/css">
+
+
+  </style>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <title>D3.js tutorial</title>
+</head>
+<body>
+   <button>Update</button>
+   <script>
+
+        var dataset = [11,12,15,20,18,17,16,18,23,25,8,10,13,19,21,25,22,18,15,13];
+
+        var margin = {top: 20, right: 20, bottom: 30, left: 40},
+            width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+
+
+       //使用了 d3.scale.ordinal()  它支持范围分档. 与定量比例尺(如d3,scale,linear())返回的连续范围值不同,序数比例尺使用的是离散范围值,也就是输出值是事先确定好的.
+       //映射范围时,也可以使用range()，y也可以使用rangband()。后者接受一个最小值和一个最大值,然后根据输入值域的长度自动将其切分为相等的块或者档。0,2也就是档间距为每一档宽度的20%
+
+       var  x = d3.scale.ordinal()
+           .domain(d3.range(dataset.length))
+           .rangeBands([0, width], 0.2);
+
+       var y = d3.scale.linear()
+         .domain([0,d3.max(dataset,function(d) { return d; })])
+         .range([height,0]);
+
+       var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom");
+
+       var yAxis = d3.svg.axis()
+             .scale(y)
+             .orient("left");
+
+       var svg = d3.select("body").append("svg")
+            .attr("width",width + margin.left + margin.right)
+            .attr("height",height + margin.top + margin.bottom)
+            .append("g")
+                 .attr("transform","translate(" + margin.left +"," + margin.top + ")");
+
+      svg.selectAll("rect")
+           .data(dataset)
+           .enter()
+           .append("rect")
+           .attr("x", function(d,i) {
+               return x(i);
+           })
+           .attr("y", function(d) {
+               return y(d);
+           })
+           .attr("width", x.rangeBand())
+           .attr("height", function(d) {
+               return height - y(d);
+           })
+           .attr("fill", function(d){
+             return "rgb(60, 127, " + d * 10 + ")";// 根据值的大小获取颜色
+           });
+
+    svg.append("g")
+        .attr("class","x axis")
+        .attr("transform","translate(0," + height + ")")
+        .call(xAxis)
+        .append("text")
+          .attr("class","label")
+          .attr("x",width+18)
+          .attr("y",-6)
+          .style("text-anchor","end")
+          .text("X轴")
+
+    svg.append("g")
+        .attr("class","y axis")
+        .call(yAxis)
+        .append("text")
+          .attr("class","label")
+          .attr("transform","rotate(0)")
+          .attr("y",-18)
+          .attr("dy",'.71em')
+          .style("text-anchor","end")
+          .text("Y轴");
+
+  //单击的时候更新数据
+     d3.select("button").on("click",function() {
+            //更新数据集
+            dataset =  [ 21, 22, 25, 10, 18, 17, 6, 8, 13, 15, 15, 20, 23, 19, 11,15, 25, 8, 25, 23 ];
+            //更新所有矩形
+            svg.selectAll("rect")
+                  .data(dataset)
+                  .transition()   //设置动画
+                  .duration(2000)
+                  .ease("elastic")
+                  .attr("y",function(d) {
+                      return y(d);
+                  })
+                  .attr("height",function(d) {
+                      return height - y(d);
+                  })
+                  .attr("fill",function(d) {
+                      return "rgb(60,127," + d*10 + ")" //根据值的大小获取颜色
+                  });
+     })
+
+
+   </script>
+</body>
+</html>

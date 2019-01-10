@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <title>D3 tutorial</title>
+</head>
+<body>
+    <script>
+
+        d3.json("./mydata.json",function(data) {
+             var canvas = d3.select("body")
+                           .append("svg")
+                           .attr("width",500)
+                           .attr("height",500)
+
+            canvas.selectAll("rect")
+                 .data(data)
+                 .enter()
+                     .append("rect")
+                     .attr("width",function(d) { return d.age * 10})
+                     .attr("height",50)
+                     .attr("y",function(d,i) { return i*50 })
+                     .attr("fill","blue")
+        })
+
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style type="text/css">
+       .axis path .axis line {
+           fill:none;
+           stroke:black;
+           shape-rendering:cirsEdges;
+       }
+       .axis .text{
+            font-family: sans-serif;
+            font-size: 11px;
+            color: red;
+       }
+  </style>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <title>D3.js tutorial</title>
+</head>
+<body>
+    <script>
+
+            let width =500,
+                height = 100;
+
+            var svg =  d3.select("body").append("svg");
+
+            //数据集
+            const data = [
+              [5,20],
+              [480,90],
+              [205,50],
+              [100,33],
+              [330,95],
+              [410,12],
+              [475,44],
+              [25,67],
+              [85,21],
+              [220,88]
+            ];
+
+            //比例尺是一组把输入域映射为输出范围的函数
+            //先创建比例尺, 设定值域为100~500和实际范围10~350
+            var scale = d3.scale.linear()
+                 .domain([100,500])
+                 .range([0,550]);
+
+            var xScale = d3.scale.linear()
+                  .domain([0,d3.max(data,function(d){ return d[0]})])
+                  .range([0,width]);
+
+            var yScale = d3.scale.linear()
+                 .domain([0,d3.max(data,function(d) {return d[1]})])
+                 .range([0,height]);
+
+
+            //使用比例尺处理数据 并到svg中显示
+             svg.selectAll("circle")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("cx",function(d){ return d[0]+50})
+                .attr("cy",function(d){ return d[1]; })
+                .attr("r",function(d) { return Math.sqrt(height-d[1]);});
+
+                //数轴
+                var xAxis = d3.svg.axis()
+                    .scale(xScale)
+                    .orient("bottom");  //设置标签相对数轴的显示位置,默认位置是底部。
+
+                //在Svg中生成数轴,放在脚本底部，以便其他元素的生成之后,再生成数轴
+                svg.append("g")
+                   .attr("class","axis")  //指定“axis”类
+                   .attr("transform","translate(0," + (height-20) + ")")
+                   .call(xAxis);
+
+
+    </script>
+</body>
+</html>

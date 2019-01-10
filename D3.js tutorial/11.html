@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <title>D3 tutorial</title>
+</head>
+<body>
+     <script>
+           var data = {
+             "name" : "Max",
+             "value":100,
+             "children": [
+                {"name":"Max","value":100},
+                {"name":"Max","value":120},
+                {"name":"Max","value":70},
+                {"name":"Max","value":90},
+                {"name":"Max","value":210},
+                {"name":"Max","value":140}
+             ]
+           }
+
+          //Cluster, Pack & Bubble layouts
+          
+          var width = 800,
+              height = 600;
+
+
+           var canvas = d3.select("body").append("svg")
+                 .attr("width",width)
+                 .attr("height",height)
+                 .append("g")
+                      .attr("transform","translate(50,50)");
+
+
+          var pack = d3.layout.pack()
+                .size([width,height-50])
+                .padding(10);
+
+          var nodes  = pack.nodes(data);
+
+          var node = canvas.selectAll('.node')
+               .data(nodes)
+               .enter()
+               .append("g")
+                  .attr("class","node")
+                  .attr("transform",function(d) { return "translate("+d.x+","+d.y+")"});
+           node.append("circle")
+              .attr("r",function(d) { return d.r})
+              .attr("fill","steelblue")
+              .attr("opacity",0.25)
+              .attr("stroke","#ADADAD")
+              .attr("stroke-width","2")
+
+          node.append("text")
+               .text(function(d) { return d.children ? "" : d.name; })
+
+     </script>
+</body>
+</html>

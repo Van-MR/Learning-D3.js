@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <title>D3 tutorial</title>
+</head>
+<body>
+    <script>
+
+       //arg
+
+        var canvas = d3.select("body").append("svg")
+                .attr("width",500)
+                .attr("height",500);
+
+        var data = [
+           {x:10,y:20},
+           {x:40,y:60},
+           {x:50,y:70}
+        ]
+
+
+      var group = canvas.append("g")
+            .attr("transform","translate(100,100)");
+
+
+     var r = 100;
+     var p = Math.PI * 2;
+
+      var arc = d3.arc()
+          .innerRadius(r-20)
+          .outerRadius(r)
+          .startAngel(0)
+          .endAngel(p);
+
+      group.append("path")
+          .attr("d",arc)
+
+    </script>
+</body>
+</html>

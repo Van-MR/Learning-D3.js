@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <title>D3.js tutorial</title>
+</head>
+<body>
+     <script>
+
+            var dataset = {
+                "name" : "Max",
+                "value" : 100,
+                "children" : [
+                  {
+                    "name" : "Sylvia",
+                    "value" : 75,
+                    "children" : [
+                        {
+                          "name" : "Craig",
+                          "value" : 25
+                        },
+                        {
+                          "name" : "Robin",
+                          "value" : 25
+                        },
+                        {
+                          "name" : "Anna",
+                          "value" : 25
+                        }
+                    ]
+                  },
+                  {
+                    "name" : "David",
+                    "value" : "75",
+                    "children" : [
+                      {
+                        "name" : "Jeff",
+                        "value" : 25
+                      },
+                      {
+                        "name" : "Burry",
+                        "value" : 25
+                      }
+                    ]
+                  },
+                  {
+                    "name" : "Mr X",
+                    "value" : 75
+                  }
+                ]
+            }
+
+           var color= d3.scale.category10();
+
+           var svg = d3.select("body").append("svg")
+               .attr("width",500)
+               .attr("height",500);
+
+           var treemap = d3.layout.treemap()
+                 .size([500,500])
+                 .nodes(dataset)
+
+            console.log(treemap);
+
+            var cells = svg.selectAll(".cell")
+                  .data(treemap)
+                  .enter()
+                  .append("g")
+                  .attr("class","cell")
+
+            cells.append("rect")
+                .attr("x",function(d) { return d.x; })
+                .attr("y",function(d) { return  d.y;})
+                .attr("width",function(d) { return  d.dx;})
+                .attr("height",function(d) { return  d.dy;})
+                .attr("fill",function(d) { return d.children ? null : color(d.parent.name) })
+                .attr("stroke",'#fff');
+
+                cells.append("text")
+                  .attr("x",function(d) { return d.x + d.dx / 2; })
+                  .attr("y",function(d) { return d.y + d.dy / 2; })
+                  .attr("text-anchor","middle")
+                  .text(function(d) { return d.children ? null : d.name; });
+     </script>
+</body>
+</html>

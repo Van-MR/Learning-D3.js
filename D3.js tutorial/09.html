@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <title>D3 tutorial</title>
+</head>
+<body>
+    <script>
+
+           //tree layout
+
+           var data = {
+             "name" : "Max",
+             "children": [
+                {
+                  "name" : "Sylvia",
+                  "children" : [
+                      {"name":"Cargi"},
+                      {"name":"Robin"},
+                      {"name":"Anna"}
+                  ]
+                },
+                {
+                  "name" : "David",
+                  "children" : [
+                      {"name":"Jeff","size":3534},
+                      {"name":"Buffy","size":5731}
+                  ]
+                }
+             ]
+           }
+
+
+           var canvas = d3.select("body").append("svg")
+                 .attr("width",500)
+                 .attr("height",500);
+
+           var diagonal = d3.svg.diagonal()
+                 .source({x:10,y:10})
+                 .target({x:300,y:300});
+
+            canvas.append("path")
+                 .attr("fill","none")
+                 .attr("stroke","black")
+                 .attr("d",diagonal);
+    </script>
+</body>
+</html>

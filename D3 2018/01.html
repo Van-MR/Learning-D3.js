@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <title>D3 2018</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <svg width="960" height="500">
+      <g transform="scale(1.5)">
+        <circle cx="200" cy="100" r="40" fill="orange"></circle>
+        <rect x="480" y="80" width="50" height="50"></rect>
+        <circle cx="400" cy="100" r="40" fill="#aff"></circle>
+        <rect x="600" y="80" width="50" height="50" fill="#83cc2a"></rect>
+        
+        <g transform="translate(0,200)" fill="#adf6ff" stroke="black">
+          <circle cx="600" cy="100" r="40" stroke-width="5"></circle>
+          <rect x="100" y="25" width="50" height="25"></rect>
+        </g>
+        <line x1="200" y1="200" x2="300" y2="300" stroke="red"></line>
+
+        <g class="lines">
+           <line x1="200" y1="20" x2="300" y2="280"></line>
+           <path fill="none" d="M300 280 L350 200 L400 250"></path>
+        </g>
+      </g>
+    </svg>
+</body>
+</html>
