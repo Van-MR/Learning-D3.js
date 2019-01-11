@@ -5,11 +5,20 @@ body {
 
 circle {
   fill: red;
-  opacity: 0.3;
+  opacity: 0.1;
+}
+
+.line-path {
+  fill: maroon;
+  //stroke: black;
+  stroke-width: 5;
+  stroke-linejoin: round;
+
 }
 
 text {
   font-family: sans-serif;
+  font-size: 3em
 }
 
 .tick text {
@@ -22,11 +31,11 @@ text {
 }
 
 .axis-label {
-  font-size: 5em;
-  fill: steelblue;
+  font-size: 4em;
+  fill: #8E8883;
 }
 
 .title {
-  font-size: 3.7em;
+  font-size: 3.2em;
   fill: #635F5D;
 }
