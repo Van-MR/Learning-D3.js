@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script src="https://d3js.org/d3.v3.min.js"></script>
+
+<style>
+
+.container rect
+  {
+  fill: #0d60fb;
+}
+
+.container text
+  {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: end;
+}
+
+body
+  {
+  background-color: black;
+}
+
+</style>
+
+<svg class="container"></svg>
+
+<script>
+
+var width = 200,
+    barHeight = 30;
+
+var x = d3.scale.linear()
+    .range([0, width]);
+
+// Data loagind and application of type
+d3.tsv("https://gist.githubusercontent.com/sandravizmad/c145344d5f60fcd1460b15eb9ea1f17e/raw/06d5cbcc4d111dbd9a66f57e5409c44dfea71d7f/bar%2520chart%2520data", type, function(error, data) {
+  x.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+  console.log(data);
+
+  var container = d3.select(".container")
+    .attr("width", 900)
+  	.attr("height", 1000);
+
+  var bar = container.selectAll("g")
+      .data(data)
+  		.enter()
+  		.append("g")
+      .attr("transform", function(d, i) {return "translate(10," + i  * barHeight + ")"; });
+
+  bar.append("rect")
+      .attr("width", function(d) { return x(d.value); })
+      .attr("height", barHeight - 5);
+
+  bar.append("text")
+      .attr("x", function(d) { return x(d.value) - 10; })
+      .attr("y", barHeight / 2)
+      .attr("dy", ".34em")
+      .text(function(d) { return d.name; });
+});
+
+function type(d) {
+  d.value = +d.value;
+  return d;
+}
+
+</script>

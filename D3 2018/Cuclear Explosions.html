@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.24.0/d3-legend.min.js"></script>
+  <style type="text/css">
+        body{
+          margin:0px;
+        }
+        .tick text, .legendCells text {
+       fill: #111111;
+       font-size: 10pt;
+       font-family: 'Open Sans', sans-serif;
+     }
+     .axis-label, .legend-label {
+       fill: #AAAAAA;
+       font-size: 10pt;
+       font-family: 'Open Sans', sans-serif;
+     }
+     .circle:hover {
+       fill: #F012BE;
+     }
+     div.tooltip {
+       position: absolute;
+       text-align: center;
+       width: 280px;
+       height: 60px;
+       vertical-align: middle;
+       line-height: 30px;
+       font-family:'Open Sans', sans-serif;
+       background: lightblue;
+       border: 0px;
+       border-radius: 8px;
+       pointer-events: none;
+     }
+  </style>
+  <title>Document</title>
+</head>
+<body>
+   <svg width="1000" height="500"></svg>
+
+   <script type="text/javascript">
+       const data = [
+         {'name':'USA','value':'714'},
+         {'name':'USSR','value':'45'},
+         {'name':'UK','value':'210'},
+         {'name':'FRANCE','value':'45'},
+         {'name':'CHINA','value':'1032'},
+         {'name':'INDIA','value':'54'},
+         {'name':'PAKIST','value':'2'}
+       ];
+
+
+       const svg =  d3.select("svg");
+
+       const width = svg.attr("width");
+       const height = svg.attr("height");
+       const margin = { left: 100, right: 120, top: 20, bottom: 120 };
+       const innerWidth = width - margin.left - margin.right;
+       const innerHeight = height - margin.top - margin.bottom;
+       const colorLabel = 'Nation Detonated';
+
+       const g = svg.append("g")
+              .attr("transform",`translate(${margin.left},${margin.top + 50})`);
+
+       const colorLegendG = g.append("g")
+              .attr("transform",`translate(${innerWidth-100},50)`);
+
+       const Canvas  =  g.append("g")
+              .attr("transform",`translate(${innerWidth/2},${innerHeight/2})`);
+
+
+      colorLegendG.append("text")
+                  .attr("class","legend-label")
+                  .attr("x",-30)
+                  .attr("y",-20)
+                  .text(colorLabel);
+
+      const colorScale = d3.scaleOrdinal()
+         									.range(d3.schemeCategory10);
+
+
+
+
+      const colorLegend = d3.legendColor()
+         .scale(colorScale)
+         .shape('rect');
+
+
+      const pieData = d3.pie().value( d => d.value)(data);
+
+
+      console.log(pieData);
+
+
+
+
+      const arc = d3.arc()
+                    .innerRadius(innerHeight/4)
+                    .outerRadius(innerHeight/2);
+
+      const temp = d3.select("body")
+                   .append("div")
+                   .attr("class","tooltip")
+                   .attr("opacity",0);
+
+      Canvas.selectAll('path')
+             .data(pieData)
+             .enter()
+             .append("path")
+             .attr('d',arc)
+             .attr("fill", d => colorScale(d.data.value))
+             .on("mouseover",function(d) {
+                  temp.transition()
+                      .duration(200)
+                      .style("opacity",1);
+                  temp.html("Detonated by: "+d.data.name + '<br>' +
+                          "Count: " + d.data.value)
+                   .style("left", (d3.event.pageX - 60) + "px")
+                   .style("top", (d3.event.pageY + 20) + "px");
+             })
+             .on("mouseout", function(d) {
+            	temp.transition()
+              	 .duration(500)
+               	 .style("opacity", 0);
+        			});
+
+     colorLegendG.call(colorLegend)
+     .selectAll('.cell text')
+       .attr('dy', '0.1em');
+
+   </script>
+</body>
+</html>

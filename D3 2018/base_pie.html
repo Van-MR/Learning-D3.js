@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.24.0/d3-legend.min.js"></script>
+  <style type="text/css">
+        body{
+          margin:0px;
+        }
+        .domain {
+        display: none;
+      }
+      .legendCells text {
+        fill: #8E8883;
+        font-size: 20pt;
+        font-family: sans-serif;
+      }
+      .legend-label {
+        fill: #635F5D;
+        font-size: 40pt;
+        font-family: sans-serif;
+      }
+
+      div.tooltip {
+        position: absolute;
+        text-align: center;
+        width: 200px;
+        height: 70px;
+        vertical-align: middle;
+        line-height: 30px;
+        font-family:'Open Sans', sans-serif;
+        background: #ececec;
+        border: 0px;
+        border-radius: 8px;
+        pointer-events: none;
+      }
+  </style>
+  <title>Document</title>
+</head>
+<body>
+    <svg width='960' height="500"></svg>
+    <script type="text/javascript">
+         const data = [
+                      {
+                        "Rank": "< $20000",
+                        "Number": 614
+                      },
+                      {
+                        "Rank": "$20000 - $50000",
+                        "Number": 1431
+                      },
+                      {
+                        "Rank": "$50000 - $80000",
+                        "Number": 1554
+                      },
+                      {
+                        "Rank": "$80000 - $110000",
+                        "Number": 2309
+                      },
+                      {
+                        "Rank": "$110000 - $140000",
+                        "Number": 1030
+                      },
+                      {
+                        "Rank": "> $140000",
+                        "Number": 600
+                      }
+                    ]
+
+         const  svg = d3.select("svg");
+         const margin = { left:20,right:400,top:1,bottom:1};
+         const width = svg.attr("width");
+         const height = svg.attr("height");
+         const innerWidth = width - margin.left - margin.right;
+         const innerHeight = height - margin.top - margin.bottom;
+
+         const arc = d3.arc()
+               .innerRadius(100)
+               .outerRadius(innerHeight/4);
+
+         const pieData =  d3.pie().value(d => d.Number)(data);
+
+         console.log(pieData);
+
+
+         const g = svg.append("g")
+               .attr("transform",`translate(${margin.left},${margin.top})`);
+
+        const PieG = g.append("g")
+              .attr("transform",`translate(${innerWidth/2},${innerHeight/2})`);
+
+         const colorScale = d3.scaleOrdinal()
+                             .range(d3.schemeCategory10);
+
+         const temp = d3.select("body")
+                      .append("div")
+                      .attr("class","tooltip")
+                      .attr("opacity",0);
+
+
+
+          PieG.selectAll("path")
+           .data(pieData)
+           .enter()
+           .append("path")
+           .attr("d",arc)
+           .attr("fill", d => colorScale(d.data.Number))
+           .on("mouseover",function(d){
+              temp.transition()
+                  .duration(200)
+                  .style("opacity",1);
+
+              temp.html("Salary:" +  d.data.Rank + '<br>'  + "Count" + d.data.Number)
+                  .style("left", (d3.event.pageX - 60) + "px")
+                  .style("top", (d3.event.pageY + 20) + "px");
+
+           })
+           .on("mouseout",function(d) {
+               temp.transition()
+                   .duration(500)
+                   .style("opacity",0);
+           })
+
+
+    </script>
+</body>
+</html>

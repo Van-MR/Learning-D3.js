@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Pack</title>
+</head>
+<body>
+   <svg width="960" height="500"></svg>
+   <script src="http://d3js.org/d3.v3.min.js"></script>
+
+   <script type="text/javascript">
+           var  data =
+               {
+                "name":"中国",
+                "children":
+                [
+                {
+                "name":"浙江" ,
+                "children":
+                [
+                   {"name":"杭州" },
+                   {"name":"宁波" },
+                   {"name":"温州" },
+                   {"name":"绍兴" }
+                ]
+                },
+                {
+                "name":"广西" ,
+                "children":
+                [
+                {"name":"桂林"},
+                {"name":"南宁"},
+                {"name":"柳州"},
+                {"name":"防城港"}
+                ]
+                },
+                {
+                "name":"黑龙江",
+                "children":
+                [
+                {"name":"哈尔滨"},
+                {"name":"齐齐哈尔"},
+                {"name":"牡丹江"},
+                {"name":"大庆"}
+                ]
+                },
+                {
+                "name":"新疆" ,
+                "children":
+                [
+                {"name":"乌鲁木齐"},
+                {"name":"克拉玛依"},
+                {"name":"吐鲁番"},
+                {"name":"哈密"}
+                ]
+                },
+                {
+                "name":"河北" ,
+                "children":
+                [
+                {"name":"石家庄"},
+                {"name":"唐山"},
+                {"name":"邯郸"},
+                {"name":"秦皇岛"}
+                ]
+                },
+                {
+                "name":"西藏" ,
+                "children":
+                [
+                {"name":"拉萨"},
+                {"name":"昌都"},
+                {"name":"林芝"}
+                ]
+                },
+                {
+                "name":"江苏" ,
+                "children":
+                [
+                {"name":"南京"},
+                {"name":"无锡"},
+                {"name":"徐州"},
+                {"name":"常州"},
+                {"name":"连云港"},
+                {"name":"淮安"}
+                ]
+                },
+                {
+                "name":"江苏" ,
+                "children":
+                [
+                {"name":"南京"},
+                {"name":"无锡"},
+                {"name":"徐州"},
+                {"name":"常州"},
+                {"name":"连云港"},
+                {"name":"淮安"}
+                ]
+                },
+                {
+                "name":"湖南" ,
+                "children":
+                [
+                {"name":"长沙"},
+                {"name":"株洲"},
+                {"name":"湘潭"},
+                {"name":"衡阳"},
+                {"name":"邵阳"},
+                {"name":"岳阳"}
+                ]
+                },
+                {
+                "name":"海南" ,
+                "children":
+                [
+                {"name":"海口"},
+                {"name":"三亚"},
+                {"name":"三沙"}
+                ]
+                },
+                {
+                "name":"陕西" ,
+                "children":
+                [
+                {"name":"西安"},
+                {"name":"咸阳"},
+                {"name":"汉中"},
+                {"name":"安康"},
+                {"name":"榆林"},
+                {"name":"延安"}
+                ]
+                },
+                {
+                "name":"甘肃" ,
+                "children":
+                [
+                {"name":"兰州"},
+                {"name":"酒泉"},
+                {"name":"金昌"},
+                {"name":"天水"},
+                {"name":"嘉峪关"},
+                {"name":"武威"}
+                ]
+                }
+                ]
+                }
+
+
+           var svg = d3.select("svg");
+           var margin = { top:20,right:20,bottom:20,left:20 };
+           var width = svg.attr("width");
+           var height =svg.attr("height");
+           var outerWidth = width - margin.left - margin.right;
+           var outerHeight = height -margin.top - margin.bottom;
+
+           var pack = d3.layout.pack()
+                        .size([width,height])
+                        .radius(20);
+
+            //transform data     nodes 
+            var nodes = pack.nodes(data);
+            //links data
+         		var links = pack.links(nodes);
+
+
+          svg.selectAll("circle")
+             .data(nodes)
+             .enter()
+             .append("circle")
+             .attr("fill","frg(31,119,180)")
+             .attr("fill-opacity","0.4")
+             .attr("cx",function(d) { return d.x; })
+             .attr("cy",function(d) { return d.y; })
+             .attr("r",function(d) { return d.r; } )
+             .on("mouseover",function(d,i){
+        				d3.select(this)
+        					.attr("fill","#073668");
+        			})
+        		 .on("mouseout",function(d,i){
+        				d3.select(this)
+        					.attr("fill","#00fdff");
+        			});
+
+         svg.selectAll("text")
+            .data(nodes)
+            .enter()
+            .append("text")
+            .attr("font-size","10px")
+            .attr("fill","white")
+            .attr("fill-opacity",function(d) {  d.depth === 2 ? 0.9 : 0 })
+            .attr("x",function(d) { return d.x; })
+            .attr("y",function(d) { return d.y; })
+            .attr("dx",-12)
+            .attr("dy",1)
+            .text(function(d) { return d.name })
+
+
+
+
+
+
+
+
+   </script>
+</body>
+</html>

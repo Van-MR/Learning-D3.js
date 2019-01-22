@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style type="text/css">
+      body{
+        padding: 0;
+      }
+  </style>
+  <title>Document</title>
+
+</head>
+<body>
+     <svg width="960" height="500"></svg>
+     <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+     <script type="text/javascript">
+
+             const  data = [
+                 {'country':'Iran','religion':'Christian','population':110000},
+                 {'country':'Iran','religion':'Unaffiated','population':73000},
+                 {'country':'Sudan','religion':'Musilim','population':60000},
+                 {'country':'Sudan','religion':'Christian','population':2000},
+                 {'country':'Iraq','religion':'Jewish','population':90000},
+                 {'country':'Iraq','religion':'Christian','population':7000},
+                 {'country':'Yeman','religion':'Hindu','population':210000},
+                 {'country':'Yeman','religion':'Musilim','population':20000},
+                 {'country':'Sommia','religion':'Folk','population':40000},
+                 {'country':'Sommia','religion':'Jewish','population':80000},
+                 {'country':'Libya','religion':'Hindu','population':10000},
+                 {'country':'Libya','religion':'Musilim','population':6000}
+             ]
+
+            const svg = d3.select("svg");
+            const margin = { left: 123, top: 40, right: 30, bottom: 47 };
+            const width = svg.attr("width");
+            const height =  svg.attr("height");
+            const chartWidth = width - margin.left - margin.right;
+            const chartHeight = height - margin.top - margin.bottom;
+            var barPadding = 0.2;
+
+
+            const g = svg.append("g")
+                  .attr("transform",`translate(${margin.left},${margin.top})`);
+
+
+            const xAxisG = g.append("g")
+                             .attr("class", "x axis")
+                             .attr("transform",`translate(50,${chartHeight-50})`);
+
+            const xScale = d3.scale.linear().range([0, chartWidth]);
+
+
+            const yAxisG = g.append("g")
+                             .attr("class","y axis");
+
+            const yScale = d3.scale.ordinal().rangeBands([innerHeight, 0], barPadding);
+
+
+
+
+          var siFormat = d3.format("s");
+
+          var customTickFormat = function (d){
+             return siFormat(d).replace("G", "B");
+           };
+
+           const xAxis = d3.svg.axis().scale(xScale).orient("bottom")
+                .ticks(5)
+                .tickFormat(customTickFormat)
+                .outerTickSize(0);
+
+          const yAxis = d3.svg.axis().scale(yScale).orient("left")
+               .outerTickSize(0);
+
+              xAxisG.call(xAxis);
+              yAxisG.call(yAxis);
+
+     </script>
+</body>
+</html>

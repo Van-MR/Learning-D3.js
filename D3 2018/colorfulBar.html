@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style type="text/css">
+    body {font-family: calibri;margin:0;}
+    .axis {font: 14px calibri;}
+    .label {font: 16px calibri;}
+  </style>
+  <title>Document</title>
+</head>
+<body>
+  <p>Frequency of usage of letters in English</p>
+  <h2>Bar Chart 1</h2>
+  <div><svg id="chart1" width="800" height="400"></svg></div>
+  <h2>Bar Chart 2</h2>
+  <div><svg id="chart2" width="800" height="400"></svg></div>
+
+
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <script type="text/javascript">
+         var data = [
+              {
+                "letter": "A",
+                "frequency": ".08167"
+              },
+              {
+                "letter": "B",
+                "frequency": ".01492"
+              },
+              {
+                "letter": "C",
+                "frequency": ".02782"
+              },
+              {
+                "letter": "D",
+                "frequency": ".04253"
+              },
+              {
+                "letter": "E",
+                "frequency": ".12702"
+              },
+              {
+                "letter": "F",
+                "frequency": ".02288"
+              },
+              {
+                "letter": "G",
+                "frequency": ".02015"
+              },
+              {
+                "letter": "H",
+                "frequency": ".06094"
+              },
+              {
+                "letter": "I",
+                "frequency": ".06966"
+              },
+              {
+                "letter": "J",
+                "frequency": ".00153"
+              },
+              {
+                "letter": "K",
+                "frequency": ".00772"
+              },
+              {
+                "letter": "L",
+                "frequency": ".04025"
+              },
+              {
+                "letter": "M",
+                "frequency": ".02406"
+              },
+              {
+                "letter": "N",
+                "frequency": ".06749"
+              },
+              {
+                "letter": "O",
+                "frequency": ".07507"
+              },
+              {
+                "letter": "P",
+                "frequency": ".01929"
+              },
+              {
+                "letter": "Q",
+                "frequency": ".00095"
+              },
+              {
+                "letter": "R",
+                "frequency": ".05987"
+              },
+              {
+                "letter": "S",
+                "frequency": ".06327"
+              },
+              {
+                "letter": "T",
+                "frequency": ".09056"
+              },
+              {
+                "letter": "U",
+                "frequency": ".02758"
+              },
+              {
+                "letter": "V",
+                "frequency": ".00978"
+              },
+              {
+                "letter": "W",
+                "frequency": ".02360"
+              },
+              {
+                "letter": "X",
+                "frequency": ".00150"
+              },
+              {
+                "letter": "Y",
+                "frequency": ".01974"
+              },
+              {
+                "letter": "Z",
+                "frequency": ".00074"
+              }
+        ]
+
+
+        var colorScale_1 = d3.scaleSequential(d3.interpolateRainbow);
+        colorScale_1.domain([0,25]);
+
+
+        var colorScale_2 = d3.scaleLinear().domain([0,0.13]).range(["lightgrey","green"]);
+
+
+        //chart1
+        var svg1 =d3.select("#chart1");
+        var margin = {top:20,right:20,bottom:30,left:40},
+            width  = +svg1.attr("width") - margin.left - margin.right,
+            height = +svg1.attr("height") - margin.top - margin.bottom;
+
+       var x1 = d3.scaleBand().rangeRound([0, width]).domain(data.map(function(d) { return d.letter; })).padding(0.2),
+           y1 = d3.scaleLinear().rangeRound([height, 0]).domain([0,d3.max(data,function(d){ return d.frequency;})]); // note that we've reversed the range
+
+
+        var g1 = svg1.append("g")
+            .attr("transform",`translate(${margin.left},${margin.top})`);
+
+        //xAxis
+        g1.append("g")
+           .attr("class","axis x-aixs")
+           .attr("transform",`translate(0,${height})`)
+           .call(d3.axisBottom(x1));
+
+        //yAxis
+        g1.append("g")
+          .attr("class", "axis y-axis")
+          .call(d3.axisLeft(y1).ticks(10, "#"));
+
+
+       //y-axis label
+         g1.append("text")
+           .attr("class","label")
+           .attr("x",0-margin.left)
+           .attr("y",-10)
+           .style("text-anchor","start")
+           .text("Frequency");
+
+        //bars
+          g1.selectAll(".bar")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("class","bar")
+            .attr("x", d => x1(d.letter))
+            .attr("y", d => y1(d.frequency))
+            .attr("width", x1.bandwidth()) // width of each band
+            .attr("height", function(d) { return height - y1(d.frequency); })
+        		.style("fill", function(d,i){ return colorScale_1(i)});  // color of the bars
+
+
+
+
+      // chart 2
+      var svg2 = d3.select("#chart2"),
+          margin = {top: 20, right: 20, bottom: 30, left: 40},
+          width = +svg2.attr("width") - margin.left - margin.right,
+          height = +svg2.attr("height") - margin.top - margin.bottom;
+
+      var x2 = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+          y2 = d3.scaleLinear().rangeRound([height, 0]);
+
+      var g2 = svg2.append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+          x2.domain(data.map(function(d) { return d.letter; }));
+          y2.domain([0, d3.max(data, function(d) { return d.frequency; })]);
+
+          // x-axis
+          g2.append("g")
+            .attr("class", "axis axis--x")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x2));
+
+          // y-axis
+          g2.append("g")
+            .attr("class", "axis axis--y")
+            .call(d3.axisLeft(y2).ticks(10, "#"));
+
+          // y-axis label
+          g2.append("text")
+          	.attr("class", "label")
+            .attr("x", 0-margin.left)
+            .attr("y", 0-margin.top/2)
+            .style("text-anchor", "begin")
+          	.text ("Frequency")
+
+          // bars
+          g2.selectAll(".bar")
+            .data(data)
+            .enter().append("rect")
+              .attr("class", "bar")
+              .attr("x", function(d) { return x2(d.letter); })
+              .attr("y", function(d) { return y2(d.frequency); })
+              .attr("width", x2.bandwidth())
+              .attr("height", function(d) { return height - y2(d.frequency); })
+          		.style("fill", function(d) { return colorScale_2(d.frequency); });
+
+   </script>
+</body>
+</html>

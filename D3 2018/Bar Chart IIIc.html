@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style type="text/css">
+
+     body{
+       background: black;
+     }
+     .axis text {
+      font: 10px sans-serif;
+       color: red;
+      }
+
+      .axis path,
+      .axis line {
+          fill: none;
+          stroke: #000;
+          shape-rendering: crispEdges;
+      }
+
+      .x .axis path {
+        display: none;
+      }
+  </style>
+  <title>Document</title>
+</head>
+<body>
+    <svg class="chart"></svg>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript">
+           datas = [
+            {
+              "name": "A",
+              "value": ".08167"
+            },
+            {
+              "name": "B",
+              "value": ".01492"
+            },
+            {
+              "name": "C",
+              "value": ".02782"
+            },
+            {
+              "name": "D",
+              "value": ".04253"
+            },
+            {
+              "name": "E",
+              "value": ".12702"
+            },
+            {
+              "name": "F",
+              "value": ".02288"
+            },
+            {
+              "name": "G",
+              "value": ".02015"
+            },
+            {
+              "name": "H",
+              "value": ".06094"
+            },
+            {
+              "name": "I",
+              "value": ".06966"
+            },
+            {
+              "name": "J",
+              "value": ".00153"
+            },
+            {
+              "name": "K",
+              "value": ".00772"
+            },
+            {
+              "name": "L",
+              "value": ".04025"
+            },
+            {
+              "name": "M",
+              "value": ".02406"
+            },
+            {
+              "name": "N",
+              "value": ".06749"
+            },
+            {
+              "name": "O",
+              "value": ".07507"
+            },
+            {
+              "name": "P",
+              "value": ".01929"
+            },
+            {
+              "name": "Q",
+              "value": ".00095"
+            },
+            {
+              "name": "R",
+              "value": ".05987"
+            },
+            {
+              "name": "S",
+              "value": ".06327"
+            },
+            {
+              "name": "T",
+              "value": ".09056"
+            },
+            {
+              "name": "U",
+              "value": ".02758"
+            },
+            {
+              "name": "V",
+              "value": ".00978"
+            },
+            {
+              "name": "W",
+              "value": ".02360"
+            },
+            {
+              "name": "X",
+              "value": ".00150"
+            },
+            {
+              "name": "Y",
+              "value": ".01974"
+            },
+            {
+              "name": "Z",
+              "value": ".00074"
+            }
+       ]
+
+       var margin = {top:20,right:30,bottom:30,left:40},
+           width = 1000 - margin.left - margin.right,
+           height = 500 - margin.top - margin.bottom;
+
+       var x = d3.scale.ordinal()
+           .rangeBands([0,width],.1)
+           .domain(datas.map(function(d) { return d.name; }));
+
+       var y = d3.scale.linear()
+           .domain([0,d3.max(datas,function(d) { return d.value; })])
+           .range([height,0]);
+
+        var xAixs = d3.svg.axis()
+             .scale(x)
+             .orient("bottom");
+
+        var yAxis = d3.svg.axis()
+              .scale(y)
+              .orient("left");
+
+        
+
+        var Chart = d3.select(".chart")
+              .attr("width",width + margin.left + margin.right)
+              .attr("height",height + margin.top + margin.bottom)
+              .append("g")
+              .attr("transform",`translate(${margin.left+50},${margin.top})`);
+
+
+      Chart.append("g")
+             .attr("class","x axis")
+             .attr("transform",`translate(0,${height})`)
+             .call(xAixs);
+
+      Chart.append("g")
+          .attr("class", "y axis")
+          .call(yAxis);
+
+
+      var bar =  Chart.selectAll(".bar")
+            .data(datas)
+            .enter()
+            .append("rect")
+            .attr('class','bar')
+            .attr('x',function(d) { return x(d.name)})
+            .attr('y',function(d) { return y(d.value)})
+            .attr('height',function(d) { return height - y(d.value)})
+            .attr('width',x.rangeBand())
+            .attr("fill",'#0e60fb');
+
+
+
+
+
+    </script>
+</body>
+</html>

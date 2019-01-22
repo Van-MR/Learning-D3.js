@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <style type="text/css">
+          body{
+            marign:0;
+          }
+        
+    </style>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+  </head>
+  <body>
+     <div id="differentiation-year"></div>
+
+
+     <script>
+     var someData = [{"differentiation":"simple","year":2017,"count":33,"country":"Absurdistan"},{"differentiation":"","year":2017,"count":1,"country":"Absurdistan"},{"differentiation":"beginner","year":2017,"count":5,"country":"Absurdistan"},{"differentiation":"complex","year":2017,"count":3,"country":"Absurdistan"},{"differentiation":"beginner","year":2016,"count":10,"country":"Absurdistan"},{"differentiation":"","year":2016,"count":3,"country":"Absurdistan"},{"differentiation":"complex","year":2016,"count":15,"country":"Absurdistan"},{"differentiation":"simple","year":2016,"count":216,"country":"Absurdistan"},{"differentiation":"simple","year":2015,"count":180,"country":"Absurdistan"},{"differentiation":"","year":2015,"count":6,"country":"Absurdistan"},{"differentiation":"beginner","year":2015,"count":10,"country":"Absurdistan"},{"differentiation":"complex","year":2015,"count":13,"country":"Absurdistan"},{"differentiation":"simple","year":2014,"count":163,"country":"Absurdistan"},{"differentiation":"","year":2014,"count":13,"country":"Absurdistan"},{"differentiation":"beginner","year":2014,"count":18,"country":"Absurdistan"},{"differentiation":"complex","year":2014,"count":16,"country":"Absurdistan"},{"differentiation":"beginner","year":2013,"count":22,"country":"Absurdistan"},{"differentiation":"simple","year":2013,"count":157,"country":"Absurdistan"},{"differentiation":"","year":2013,"count":26,"country":"Absurdistan"},{"differentiation":"complex","year":2013,"count":13,"country":"Absurdistan"},{"differentiation":"draft","year":2013,"count":3,"country":"Absurdistan"},{"differentiation":"simple","year":2012,"count":137,"country":"Absurdistan"},{"differentiation":"beginner","year":2012,"count":21,"country":"Absurdistan"},{"differentiation":"complex","year":2012,"count":7,"country":"Absurdistan"},{"differentiation":"","year":2012,"count":31,"country":"Absurdistan"},{"differentiation":"draft","year":2012,"count":6,"country":"Absurdistan"},{"differentiation":"simple","year":2011,"count":110,"country":"Absurdistan"},{"differentiation":"complex","year":2011,"count":3,"country":"Absurdistan"},{"differentiation":"beginner","year":2011,"count":27,"country":"Absurdistan"},{"differentiation":"","year":2011,"count":25,"country":"Absurdistan"},{"differentiation":"","year":2010,"count":107,"country":"Absurdistan"},{"differentiation":"","year":2009,"count":87,"country":"Absurdistan"},{"differentiation":null,"year":2009,"count":5,"country":"Absurdistan"},{"differentiation":"","year":2008,"count":46,"country":"Absurdistan"},{"differentiation":"","year":2007,"count":39,"country":"Absurdistan"},{"differentiation":"","year":2006,"count":20,"country":"Absurdistan"},{"differentiation":"","year":2005,"count":20,"country":"Absurdistan"},{"differentiation":"","year":2004,"count":11,"country":"Absurdistan"}];
+     drawCopDifferentationByYear(someData);
+
+     function drawCopDifferentationByYear(data) {
+
+       data.forEach(function(d) {
+         d["count"] = +d["count"];
+         d["year"] = +d["year"];
+       });
+
+       var margin = {top: 20, right: 20, bottom: 30, left: 100};
+
+       var width = 800 - margin.left - margin.right,
+           height = 500 - margin.top - margin.bottom;
+
+       var legendRectSize = 18;
+       var legendSpacing = 4;
+
+       var xScale = d3.scaleBand()
+           .range([0,width]);
+
+       var yScale = d3.scaleLinear()
+           .range([height, 0]);
+
+       var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+
+       var svg = d3.select("#differentiation-year").append("svg")
+         .attr("width", width + margin.left + margin.right)
+         .attr("height", height + margin.top + margin.bottom)
+         .append("g")
+         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+       var filteredData = data.filter(function(d) {
+         return d["differentiation"] == "complex" ||
+           d["differentiation"] == "simple" ||
+           d["differentiation"] == "beginner" ||
+           d["differentiation"] == "draft";
+       })
+           .filter(function(d) { return d["year"] > 2010; })
+           .sort(function(a, b) { return a["year"] - b["year"]; });
+
+         var valueLookup = d3.nest()
+       .key(function(d) { return d["year"]; })
+       .key(function(d) { return d["differentiation"]; })
+       .map(data);
+
+       var differentiations = d3.set(filteredData.map(function(d) { return d["differentiation"]; })).values(),
+       years = d3.set(filteredData.map(function(d) { return d["year"]; })).values();
+
+       pivotData = [];
+       years.forEach(function(year) {
+         var eachYear = {};
+         differentiations.forEach(function(differentiation) {
+           eachYear["year"] = year;
+           var differentiationArray = valueLookup["$"+ year];
+           var differentiationName = differentiationArray["$" + differentiation];
+           if (differentiationName) {
+             var getCountPosition = differentiationName[0];
+             var theCount = getCountPosition["count"];
+             eachYear[differentiation] = theCount;
+           } else {
+             eachYear[differentiation] = 0;
+           }
+
+         });
+         pivotData.push(eachYear);
+       });
+
+       var stack = d3.stack()
+       .keys(differentiations)
+       .order(d3.stackOrderDescending)
+       .offset(d3.stackOffsetNone);
+
+       var series = stack(pivotData);
+       xScale.domain(years);
+
+       var allMaxValues = [];
+       series.forEach(function(d) {
+         d.forEach(function(d) {
+           allMaxValues.push(d[1]);
+         });
+       });
+
+       var maxValue = d3.max(allMaxValues, function(d) { return d; });
+       yScale.domain([0, maxValue]);
+
+       // x axis
+       svg.append("g")
+       .attr("class", "x axis")
+       .attr("transform", "translate(0," + height + ")")
+       .call(d3.axisBottom(xScale));
+
+       // y axis
+       svg.append("g")
+       .attr("class", "y axis")
+       .call(d3.axisLeft(yScale));
+
+       // appends the rect
+       svg.selectAll(".bar-group")
+       .data(series)
+       .enter().append("g")
+       .attr("class", "bar-group")
+       .style("fill", function(d) { return colorScale(d.key); })
+       .selectAll(".bar")
+       .data(function(d) { return d; })
+       .enter().append("rect")
+       .attr("class", "bar")
+       .attr("x", function(d) { return xScale(d.data.year) + 10; })
+       .attr("y", function(d) { return yScale(d[1]); })
+       .attr("height", function(d) { return yScale(d[0]) - yScale(d[1]); })
+       .attr("width", xScale.bandwidth() - 10)
+
+       var legend = svg.selectAll('.legend')
+       .data(colorScale.domain())
+       .enter().append('g')
+       .attr('class', 'legend')
+       .attr('transform', function(d, i) {
+         var height = legendRectSize + legendSpacing;
+         var offset =  height * colorScale.domain().length / 4;
+         var horz = 39 * legendRectSize;
+         var vert = i * height + offset;
+         return 'translate(' + horz + ',' + vert + ' )';
+       });
+
+       legend.append('rect')
+       .attr('width', legendRectSize)
+       .attr('height', legendRectSize)
+       .style('fill', colorScale)
+       .style('stroke', colorScale);
+
+       legend.append('text')
+       .attr('x', legendRectSize + legendSpacing)
+       .attr('y', legendRectSize - legendSpacing)
+       .text(function(d) { return d.toUpperCase(); });
+
+     }
+     </script>
+  </body>
+</html>

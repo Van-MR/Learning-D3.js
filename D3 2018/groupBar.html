@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <title>group bars</title>
+  <style type="text/css">
+       body{
+         margin: 0;
+       }
+  </style>
+</head>
+<body>
+
+</body>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.24.0/d3-legend.min.js"></script>
+
+<script type="text/javascript">
+      const datas = [
+                {
+                  "country": "China",
+                  "religion": "Christian",
+                  "population": 68410000
+                },
+                {
+                  "country": "China",
+                  "religion": "Muslim",
+                  "population": 24690000
+                },
+                {
+                  "country": "China",
+                  "religion": "Unaffiliated",
+                  "population": 700680000
+                },
+                {
+                  "country": "China",
+                  "religion": "Hindu",
+                  "population": 20000
+                },
+                {
+                  "country": "China",
+                  "religion": "Buddhist",
+                  "population": 244130000
+                },
+                {
+                  "country": "China",
+                  "religion": "Folk Religions",
+                  "population": 294320000
+                },
+                {
+                  "country": "China",
+                  "religion": "Other Religions",
+                  "population": 9080000
+                },
+                {
+                  "country": "China",
+                  "religion": "Jewish",
+                  "population": 0
+                },
+                {
+                  "country": "India",
+                  "religion": "Christian",
+                  "population": 31130000
+                },
+                {
+                  "country": "India",
+                  "religion": "Muslim",
+                  "population": 176190000
+                },
+                {
+                  "country": "India",
+                  "religion": "Unaffiliated",
+                  "population": 870000
+                },
+                {
+                  "country": "India",
+                  "religion": "Hindu",
+                  "population": 973750000
+                },
+                {
+                  "country": "India",
+                  "religion": "Buddhist",
+                  "population": 9250000
+                },
+                {
+                  "country": "India",
+                  "religion": "Folk Religions",
+                  "population": 5840000
+                },
+                {
+                  "country": "India",
+                  "religion": "Other Religions",
+                  "population": 27560000
+                },
+                {
+                  "country": "India",
+                  "religion": "Jewish",
+                  "population": 10000
+                },
+                {
+                  "country": "USA",
+                  "religion": "Christian",
+                  "population": 243060000
+                },
+                {
+                  "country": "USA",
+                  "religion": "Muslim",
+                  "population": 2770000
+                },
+                {
+                  "country": "USA",
+                  "religion": "Unaffiliated",
+                  "population": 50980000
+                },
+                {
+                  "country": "USA",
+                  "religion": "Hindu",
+                  "population": 1790000
+                },
+                {
+                  "country": "USA",
+                  "religion": "Buddhist",
+                  "population": 3570000
+                },
+                {
+                  "country": "USA",
+                  "religion": "Folk Religions",
+                  "population": 630000
+                },
+                {
+                  "country": "USA",
+                  "religion": "Other Religions",
+                  "population": 1900000
+                },
+                {
+                  "country": "USA",
+                  "religion": "Jewish",
+                  "population": 5690000
+                },
+                {
+                  "country": "Indonesia",
+                  "religion": "Christian",
+                  "population": 23660000
+                },
+                {
+                  "country": "Indonesia",
+                  "religion": "Muslim",
+                  "population": 209120000
+                },
+                {
+                  "country": "Indonesia",
+                  "religion": "Unaffiliated",
+                  "population": 240000
+                },
+                {
+                  "country": "Indonesia",
+                  "religion": "Hindu",
+                  "population": 4050000
+                },
+                {
+                  "country": "Indonesia",
+                  "religion": "Buddhist",
+                  "population": 1720000
+                },
+                {
+                  "country": "Indonesia",
+                  "religion": "Folk Religions",
+                  "population": 750000
+                },
+                {
+                  "country": "Indonesia",
+                  "religion": "Other Religions",
+                  "population": 340000
+                },
+                {
+                  "country": "Indonesia",
+                  "religion": "Jewish",
+                  "population": 0
+                },
+                {
+                  "country": "Brazil",
+                  "religion": "Christian",
+                  "population": 173300000
+                },
+                {
+                  "country": "Brazil",
+                  "religion": "Muslim",
+                  "population": 40000
+                },
+                {
+                  "country": "Brazil",
+                  "religion": "Unaffiliated",
+                  "population": 15410000
+                },
+                {
+                  "country": "Brazil",
+                  "religion": "Hindu",
+                  "population": 0
+                },
+                {
+                  "country": "Brazil",
+                  "religion": "Buddhist",
+                  "population": 250000
+                },
+                {
+                  "country": "Brazil",
+                  "religion": "Folk Religions",
+                  "population": 5540000
+                },
+                {
+                  "country": "Brazil",
+                  "religion"
+
+
+                  : "Other Religions",
+                  "population": 300000
+                },
+                {
+                  "country": "Brazil",
+                  "religion": "Jewish",
+                  "population": 110000
+                }
+              ]
+
+
+      const outerWidth = 960;
+      const outerHeight = 500;
+      const margin = {left:90,top:8,right:30,bottom:66 };
+      const barPadding = 0.2;
+
+      var xColumn = "Country";
+      var yClumn = "Population";
+      var colorColumn = "religion";
+      var layerColumn = "colorColumn";
+
+      var innerWidth = outerWidth - margin.left - margin.right;
+      var innerHeight = outerHeight - margin.top - margin.bottom;
+
+      var svg = d3.select("body").append("svg")
+            .attr("width",outerWidth)
+            .attr("height",outerHeight);
+
+      var g = svg.append("g")
+           .attr("transform",`translate(${margin.left},${margin.top})`);
+
+     var xAxisG = g.append("g")
+           .attr("class","x axis")
+           .attr("transform",`translate(0,${innerHeight})`);
+
+      var yAxisG = g.append("g")
+          .attr("class","y axis");
+
+      var colorLegendG = g.append("g")
+          .attr("class","color-legend")
+          .attr("transform",`translate(596,0)`);
+
+       var xScale = d3.scale.ordinal().rangeBands([0,innerWidth],barPadding);
+       var yScale = d3.scale.linear().range([innerHeight,0]);
+       
+       const colorScale = d3.scaleOrdinal()
+                           .range(d3.schemeCategory10);
+
+       var xAxis = s3.svg.axis().scale(xScale).orient("bottom");
+
+       var yAxis = d3.svg.axis().scale(yScale).orient("left");
+
+
+</script>
+</html>

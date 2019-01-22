@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style type="text/css">
+      body {
+         margin: 0px;
+       }
+       .domain {
+         display: none;
+       }
+       .legendCells text {
+         fill: #8E8883;
+         font-size: 28pt;
+         font-family: sans-serif;
+       }
+       .legend-label {
+         fill: #635F5D;
+         font-size: 50pt;
+         font-family: sans-serif;
+       }
+  </style>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+<body>
+   <svg width="960" height="1000"></svg>
+   <script>
+
+   const data  = [
+     {religion:'Christian',population:2173100000},
+     {religion:'Muslim',population:1598360000},
+     {religion:'Unaffiliated',population:1126280000},
+     {religion:'Hindu',population:1032860000},
+     {religion:'Buddhist',population:487320000},
+     {religion:'Folk Religions',population:404890000},
+     {religion:'Other Religions',population:57770000},
+     {religion:'Jewish',population:13640000}
+   ]
+
+     const pieValue = d => d.population;
+     const colorValue = d => d.religion;
+     const colorLabel = 'Religion';
+     const margin = { left: 20, right: 400, top: 1, bottom: 1 };
+
+     const svg = d3.select('svg');
+     const width = svg.attr('width');
+     const height = svg.attr('height');
+     const innerWidth = width - margin.left - margin.right;
+     const innerHeight = height - margin.top - margin.bottom;
+
+     const pie = d3.pie().value(pieValue);
+     const arc = d3.arc()
+       .innerRadius(innerHeight / 4)
+       .outerRadius(innerHeight / 2);
+
+     const g = svg.append('g')
+         .attr('transform', `translate(${margin.left},${margin.top})`);
+     const pieG = g.append('g')
+         .attr('transform', `translate(${innerWidth / 2},${innerHeight / 2})`);
+     const colorLegendG = g.append('g')
+         .attr('transform', `translate(${innerWidth + 60}, 150)`);
+
+     colorLegendG.append('text')
+         .attr('class', 'legend-label')
+         .attr('x', -30)
+         .attr('y', -40)
+         .text(colorLabel);
+
+     const colorScale = d3.scaleOrdinal()
+       .range(d3.schemeCategory10);
+
+     const colorLegend = d3.legend()
+       .scale(colorScale)
+       .shape('circle');
+
+     const row = d => {
+       d.population = +d.population;
+       return d;
+     };
+
+
+       colorScale.domain(data.map(colorValue));
+
+       const arcs = pie(data);
+
+       pieG.selectAll('path').data(arcs)
+         .enter().append('path')
+           .attr('d', arc)
+           .attr('fill', d => colorScale(colorValue(d.data)));
+
+       colorLegendG.call(colorLegend)
+         .selectAll('.cell text')
+           .attr('dy', '0.1em');
+
+
+
+
+   </script>
+</body>
+</html>

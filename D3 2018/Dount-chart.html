@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style type="text/css">
+          body {
+           color: #333;
+        }
+
+        #container {
+           width: 500px;
+           height: 500px;
+           margin: 0 auto;
+           position: relative;
+        }
+
+        .header {
+           font-family: Georgia;
+           font-size: 20px;
+           font-weight: bold;
+        }
+
+        .slice path {
+           stroke-width: 2;
+           stroke: white;
+        }
+
+        .slice text {
+           font-family: Helvetica, Arial, sans-serif;
+           font-size: 13px;
+        }
+  </style>
+  <title>Document</title>
+</head>
+<body>
+  <div id="container"></div>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script type="text/javascript">
+      var width = 500,
+       height = 500,
+       margin = { top: 20, right: 20, bottom: 20, left: 20};
+
+      // Width/height of the chart without margin
+      var chartWidth = width - margin.left - margin.right;
+      var chartHeight = height - margin.top - margin.bottom;
+
+      var data = [172,136,135,101,80,68,50,29,19,41];
+      var cats = ["Statistics", "Design", "Business", "Cartography", "Information Science", "Web Analytics", "Programming", "Engineering", "Mathematics", "Other"];
+
+      var colorScale = d3.scale.linear()
+         .domain([0, d3.max(data)])
+         .range(['white', '#821122']);
+
+      var pie = d3.layout.pie()
+         .sort(null);
+
+      var radius = Math.min(chartWidth, chartHeight) / 2;
+
+      var arc = d3.svg.arc()
+         .innerRadius(radius / 3)
+         .outerRadius(radius);
+
+      var svg = d3.select('#container').append('svg')
+         .attr('width', width)
+         .attr('height', height);
+
+      var chart = svg.append('g')
+         .attr('class', 'chart')
+         .attr('transform', translate(margin.left, margin.top));
+
+      // Render the text in the center of the pie
+      chart
+         .append('text')
+         .attr('class', 'header')
+         .attr('x', radius)
+         .attr('y', radius)
+         .attr('dy', '.35em')
+         .attr('text-anchor', 'middle')
+         .text('january 2019');
+
+      // Render a group element
+      var slice = chart
+         .datum(data)
+         .selectAll('.slice')
+         .data(pie)
+         .enter()
+         .append('g')
+             .attr('transform', translate(radius, radius))
+             .attr('class', 'slice');
+
+        // Render the pie slice as a child of the group element
+        slice
+           .append('path')
+               .attr('fill', function(d) { return colorScale(d.data); })
+               .attr('d', arc)
+               .append('title')
+                   .text(function(d) { return d.data + ' votes'; });
+
+        // Render the text in the pie slice as a child of the group element
+        slice
+           .append('text')
+           .attr('dy', '.35em')
+           .attr('text-anchor', 'middle')
+           .attr('transform', function(d) {
+               return translate(arc.centroid(d)) + 'rotate(' + getTextAngle(d) + ')';
+           })
+           .text(function(d, i) { return cats[i]; });
+
+
+        function getTextAngle(d) {
+           var degrees = rad2deg((d.startAngle + d.endAngle) / 2);
+           return degrees > 180 ? degrees + 90 : degrees - 90;
+        }
+
+        // Convert Radians to Degrees
+        function rad2deg(radians) {
+           return (radians / Math.PI) * 180;
+        }
+
+        // Returns a string to be used in a svg transform attribute.
+        function translate() {
+           return 'translate(' + [].slice.apply(arguments).join(', ') + ')';
+        }
+  </script>
+</body>
+</html>

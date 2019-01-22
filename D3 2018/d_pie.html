@@ -17,6 +17,11 @@
               fill: white;
               font-weight: bold;
           }
+          .title{
+            fill:red;
+            font-family: monospace;
+            font-size: 14px;
+          }
           .legend_text,
           .legend_value{
               fill: #333333;
@@ -54,28 +59,26 @@
           ]
 
 
-           const pie = d3.pie();
+          const pie = d3.pie();
 
+
+          //transform origin data into pieData
           const pieData = d3.pie().sort(null).value(d=>d.value)(data);
 
           console.log(pieData);
 
 
-
+         //colorScale
              const colors = d3.scaleOrdinal()
                     .domain(data)
                     .range([
-                      "#018670",
-                      "#9b1e5b",
-                      "#8dc63f",
-                      "#f58026",
-                      "#4b4b4b",
-                      "#9acbc2",
-                      "#00b5cc",
-                      "#014140",
-                      "#d9d5d5"
+                      "#43fede",
+                      "#f91000",
+                      "#a6d269",
+                      "#e7ee0b",
+                      "#150796"
                     ]);
-
+         //draw  arc
           const segments = d3.arc()
             	.innerRadius(0)
             	.outerRadius(175)
@@ -83,17 +86,33 @@
             	.padRadius(0);
 
 
-          const sections = svg.append("g")
+        const sections = svg.append("g")
                  .attr("transform",`translate(250,250)`)
                  .selectAll("path")
                  .data(pieData);
+
+       //draw slice
+        const pathsSlice = sections
+             .enter()
+             .append("path")
+             .attr("d", segments)
+             .attr("fill", d => colors(d.data.value))
+             .attr("opacity", 0);
+
+         pathsSlice.transition()
+             .duration(2000)
+             .delay((d,i)=>i*10)
+           .attr("opacity", 1);
+
+         pathsSlice.append('title')
+            .text(d => d.data.label + "\n"+d.data.value);
 
          sections.enter()
              .append("path")
                  .attr("d",segments)
                  .attr("fill",function(d,i) { return colors(d.data.value); });
 
-
+        //add legend
          const legends = svg.append("g")
                   .attr("transform","translate(500,100)")
                   .selectAll(".legends")
@@ -101,10 +120,22 @@
 
 
 
-         const legend = legends.enter()
-               .append("g")
-                  .classed(".legends",true)
-                  .attr("transform",function(d,i) { return `translate(0,${(i+1)*30})` });
+         const legend = legends
+                        .enter()
+                        .append("g")
+                        .classed(".legends",true)
+                        .attr("transform",function(d,i) { return `translate(0,${(i+1)*30})` })
+                        .on("mouseenter", d => {
+                         const selectedLabel = d.data.label;
+                         console.log(selectedLabel);
+                         pathsSlice.transition()
+                           .attr("opacity", d => d.data.label === selectedLabel ? 1 : 0.2);
+                       })
+                       .on("mouseout", d => {
+                         pathsSlice.transition()
+                           .attr("opacity", 1);
+                       });
+
 
           legend.append("rect")
              .attr("width",20)
@@ -122,6 +153,17 @@
                  .attr("y",15)
                  .attr("class","legend_value")
                  .text(function(d) { return  xAxisTickFormat(d.data.value)+"%"});
+
+
+         let title = "Farmer's suicides in Maharashtra : Jan-Mar 2019";
+
+        //add chart title
+           svg.append('text')
+              .text(title)
+              .attr("y", 50)
+              .attr("x", 450)
+              .attr("class","title");
+
 
 
     </script>
